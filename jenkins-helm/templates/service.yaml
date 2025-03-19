@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Values.jenkins.namespace }}
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/'
+    prometheus.io/port: '{{ .Values.jenkins.service.port }}'
+spec:
+  selector:
+    app: jenkins-server
+  type: {{ .Values.jenkins.service.type }}
+  ports:
+    - port: {{ .Values.jenkins.service.port }}
+      targetPort: {{ .Values.jenkins.service.targetPort }}
+      {{- if eq .Values.jenkins.service.type "NodePort" }}
+      nodePort: {{ .Values.jenkins.service.nodePort }}
+      {{- end }}
